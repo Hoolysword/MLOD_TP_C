@@ -34,14 +34,28 @@ Date creerDateParCopie(){
     initialiseDate(&d);
     return d;
 }
+
+Date *newDate(){
+    Date *date;
+    date = malloc(sizeof(Date));
+    initialiseDate(date);
+    return date;
+}
 int main(void) {
 //version 1
 /*Date d;
 initialiseDate(&d); //Pourquoi a t-on ajouté un &?
 afficheDate(&d);*/
 //version 2
-Date d;
+/*Date d;
 d = creerDateParCopie();
-afficheDate(&d);
+afficheDate(&d);*/
+//version 3
+Date *date;
+date = newDate();
+afficheDate(date);
+//...
+free(date);
+
 
 } 

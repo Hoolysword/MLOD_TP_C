@@ -76,17 +76,43 @@ void infosAnnee(int annee){
     printf("L'annee %d,le(s) gagnant(s) ont été : %s \n Nature des travaux : %s",annee,tab[i].Nom,tab[i].RaisonVictoire );
 
 }
+void tri_annee(winner *tab){
+	int i=1;
+	while(i!=0){
+		i=0;
+		for(int j=0;j<nb-1;j++){
+			if(tab[j].annee>tab[j+1].annee){
+			    winner k=tab[j];
+				tab[j]=tab[j+1];
+				tab[j+1]=k;
+				i++;
+			}
+		}
+	}
+}
+void addNewWinner(winner* tab){
+	nb++;
+	tab=(winner*)realloc(tab,nb*sizeof(winner));
+	tab[nb-1].annee=2013;
+	tab[nb-1].Nom="Robin";
+	tab[nb-1].RaisonVictoire="trop fort";
 
-
+}
 
 int main(void){
     nb=scanLineAsInt();
     tab=readWinners();
-	/*int nbGagnants = scanLineAsInt();
-	printf("nbGagnants = %i\n",nbGagnants);
-    winner *resultat= readWinners();*/
+	//int nbGagnants = scanLineAsInt();
+	//printf("nbGagnants = %i\n",nbGagnants);
+    //winner *resultat= readWinners();
+	tri_annee(tab);
+	addNewWinner(tab);
 	printWinners(tab);
     infosAnnee(2003);
+	/*for(int i=0;i<nb;i++){
+		free((tab+i)->Nom);
+		free((tab+i)->Nom);
+	}*/
     free(tab);
 	return EXIT_SUCCESS;
 }

@@ -13,7 +13,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
 /* This function scans a line of text (until \n) and returns a char* that contains all characters on the line (up to 255) excluding \n.
 It also ensures the \0 termination.
 **WARNING**: The result of this function has been allocated (calloc) by the function */
@@ -46,21 +45,52 @@ int scanLineAsInt() {
 };
 
 typedef struct{
-    int annee;
+    char *annee;
     char *Nom;
     char *RaisonVictoire;
 
 }winner;
-
+int nb; //variable nb de gagnant;
+winner *tab;
+FILE* f;
 winner *readWinners(){
-    winner *result=malloc(sizeof(winner));
+	printf("Hello");
+    winner *result=calloc(nb,sizeof(winner));
+    for(int i=0;i<nb;i++){
+        fgets((result+i)->annee,100,f);
+	    fgets((result+i)->Nom,100,f);
+		fgets((result+i)->RaisonVictoire,100,f);
+    }
+	return result;
 }
+ void printWinners(winner *tab){
+	 for(int i=0;i<nb;i++){
+		 printf("%s \n",tab[i].annee);
+		 printf("%s \n",tab[i].Nom);
+		 printf("%s \n",tab[i].RaisonVictoire);
+	 }
+ }
+/*void infosAnnee(int annee){
+    int i=0;
+    while(tab[i].annee!=annee){
+        i++;
+    }
+    printf("L'annee %d,le(s) gagnant(s) ont été : %s \n Nature des travaux : %s",annee,tab[i].Nom,tab[i].RaisonVictoire );
+
+}*/
+
 
 
 int main(void){
-    
-	int nbGagnants = scanLineAsInt();
+    f= fopen("TuringWinner.txt","r");
+    nb=50;
+    tab=readWinners();
+	/*int nbGagnants = scanLineAsInt();
 	printf("nbGagnants = %i\n",nbGagnants);
-    winner *resultat= readWinners();
+    winner *resultat= readWinners();*/
+	printWinners(tab);
+    //infosAnnee(2003);
+    free(tab);
+	fclose(f);
 	return EXIT_SUCCESS;
 }

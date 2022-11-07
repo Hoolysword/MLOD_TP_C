@@ -14,9 +14,9 @@ for (int i=0;i<3;i++){
 }
 }
 int main(void) {
-    int64_t t1={1,2,4};
-    int64_t t2={10,3,8};
-    int64_t tabresult= {0,0,0,0,0,0,0};
+    int64_t t1[]={1,2,4};
+    int64_t t2[]={10,3,8};
+    int64_t tabresult[]= {0,0,0,0,0,0,0};
     repeat(t1,t2, tabresult);
     for(int i=0;i<7;i++){
         printf("%zu ",tabresult[i]);

@@ -172,6 +172,7 @@ Liste retirePremier_i(Element v, Liste l) {
 		p->suiv =NULL;
 				detruire_i(p);
 	}
+    return l;
 }
 
 

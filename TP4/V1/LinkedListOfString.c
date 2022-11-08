@@ -1,15 +1,16 @@
 #include "LinkedList.h"
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 void afficheElement(Element e) {
-	printf("%s ",e);
+	printf("%s ",(char*)e);
 }
 void detruireElement(Element e){
 
 }
 bool equalsElement(Element e1, Element e2){
-	return e1 == e2;
+	return strcmp((char *)e1,(char *)e2)==0;
 }
 
 int main(void){
@@ -19,7 +20,7 @@ int main(void){
 	printf("estVide(l) = %s\n",estVide(l)?"TRUE":"FALSE");
 
 	l = ajoutTete("a",l);
-	l = ajoutTete("b",l);
+	l = ajoutTete("boo",l);
 	l = ajoutTete("c",l);
 	l = ajoutTete("a",l);
 	l = ajoutTete("d",l);
@@ -51,7 +52,7 @@ int main(void){
 	}
 
 	p = cherche_r("h",l);
-	printf("cherche_r(200) : %s\n",estVide(p)?"pas trouve":"[ERREUR] trouve !!!");
+	printf("cherche_r(h) : %s\n",estVide(p)?"pas trouve":"[ERREUR] trouve !!!");
 
 	p = cherche_r("a",l);
 	if(estVide(p))
@@ -63,29 +64,29 @@ int main(void){
 	}
 
 
-	printf("retirePremier_i(1)   : ");
-	l = retirePremier_i("a",l);
+	printf("retirePremier_i(e)   : ");
+	l = retirePremier_i("e",l);
 	afficheListe_r(l);
 
 	
-	printf("retirePremier_i(1)   : ");
-	l = retirePremier_i("a",l);
+	printf("retirePremier_i(b)   : ");
+	l = retirePremier_i("b",l);
 	afficheListe_r(l);
 
-	printf("retirePremier_i(100) : ");
+	printf("retirePremier_i(h) : ");
 	l = retirePremier_i("h",l);
 	afficheListe_r(l);
 
-	printf("retirePremier_r(4)   : ");
-	l = retirePremier_r("b",l);
+	printf("retirePremier_i(e)   : ");
+	l = retirePremier_i("e",l);
 	afficheListe_r(l);
 
-	printf("retirePremier_r(4)   : ");
-	l = retirePremier_r("b",l);
+	printf("retirePremier_i(b)   : ");
+	l = retirePremier_i("b",l);
 	afficheListe_r(l);
 
-	printf("retirePremier_r(99)  : ");
-	l = retirePremier_r("c",l);
+	printf("retirePremier_i(99)  : ");
+	l = retirePremier_i("c",l);
 	afficheListe_r(l);
 	printf("afficheEnvers  : ");
  afficheEnvers_r(l);

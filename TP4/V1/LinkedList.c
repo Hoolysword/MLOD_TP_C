@@ -1,4 +1,4 @@
-#include "liste-chainee.h"
+#include "LinkedList.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -25,9 +25,7 @@ Liste ajoutTete(Element v, Liste l) {
 }
 
 
-void afficheElement(Element e) {
-	printf("%i ",e);
-}
+extern void afficheElement(Element e);
 
 // affiche tous les éléments de la liste l
 // Attention, cette fonction doit être indépendante du type des éléments de la liste
@@ -55,8 +53,7 @@ void afficheListe_r(Liste l) {
     }
 }
 
-void detruireElement(Element e) {
-}
+extern void detruireElement(Element e);
 
 // Détruit tous les éléments de la liste l
 // version itérative
@@ -125,9 +122,8 @@ Liste ajoutFin_r(Element v, Liste l) {
 }
 
 // compare deux elements
-bool equalsElement(Element e1, Element e2){
-	return e1 == e2;
-}
+extern bool equalsElement(Element e1, Element e2);
+
 
 // Retourne un pointeur sur l'élément de la liste l contenant la valeur v ou NULL
 // version itérative
@@ -176,7 +172,6 @@ Liste retirePremier_i(Element v, Liste l) {
 		p->suiv =NULL;
 				detruire_i(p);
 	}
-	return l;
 }
 
 

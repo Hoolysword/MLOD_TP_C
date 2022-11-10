@@ -41,8 +41,8 @@ Liste readMusic(FILE* file){
 		ajoutFin_i(en_cours,music);
         
         }
-    free(ligne);
-    free(music);
+    //free(ligne);
+    //free(music);
 	return debut;
 }
 char* Annee(Element m){

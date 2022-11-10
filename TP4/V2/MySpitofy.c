@@ -39,8 +39,10 @@ Liste readMusic(FILE* file){
 		Year = strsep(&txt,",");
 		en_cours=newMusic(name,artist,album,genre,Disc_number,Track_number,Year);
 		ajoutFin_i(en_cours,music);
+        
         }
-
+    free(ligne);
+    free(music);
 	return debut;
 }
 char* Annee(Element m){
@@ -79,5 +81,6 @@ int main(void){
     Liste m = readMusic(f);
     trieParAnnee(m);
     afficheListe_i(m);
+    detruire_r(m);
 }
 

@@ -38,13 +38,6 @@ bool equalsElement(Element e1, Element e2){
 
 music* newMusic(char* name,char* artist,char* album,char* genre,char* Disc_number,char* Track_number, char* Year){
  	music* newM = malloc(sizeof(music));
-	newM->name=calloc(strlen(name),sizeof(char));
-	newM->artist=calloc(strlen(artist),sizeof(char));
-	newM->album=calloc(strlen(album),sizeof(char));
-	newM->genre=calloc(strlen(genre),sizeof(char));
-	newM->Disc_number=calloc(strlen(Disc_number),sizeof(char));
-	newM->Track_number=calloc(strlen(Track_number),sizeof(char));
-	newM->Year=calloc(strlen(Year),sizeof(char));
 	newM->name=strdup(name);
 	newM->artist=strdup(artist);
 	newM->album=strdup(album);

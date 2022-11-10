@@ -7,10 +7,10 @@ char* name;
 char* artist;
 char* album;
 char* genre;
-int Disc_number;
-int Track_number;
+char* Disc_number;
+char* Track_number;
 char* Year;
 
 }music;
 
-music* newMusic(char* name,char* artist,char* album,char* genre,int Disc_number,int Track_number, char* Year)
+music* newMusic(char* name,char* artist,char* album,char* genre,char* Disc_number,char* Track_number, char* Year);

@@ -21,7 +21,7 @@
 // Some Defines
 //----------------------------------------------------------------------------------
 #define NUM_SHOOTS 50
-#define NUM_MAX_ENEMIES 50
+#define NUM_MAX_ENEMIES 500
 #define FIRST_WAVE 10
 #define SECOND_WAVE 20
 #define THIRD_WAVE 50
@@ -35,6 +35,7 @@ typedef struct Player{
     Rectangle rec;
     Vector2 speed;
     Color color;
+    int bonus;
 } Player;
 
 typedef struct Enemy{
@@ -42,6 +43,8 @@ typedef struct Enemy{
     Vector2 speed;
     bool active;
     Color color;
+    int pv;
+    int type;
 } Enemy;
 
 typedef struct Shoot{
@@ -145,11 +148,12 @@ void InitGame(void)
     player.rec.height = 20;
     player.speed.x = 5;
     player.speed.y = 5;
-    player.color = BLACK;
+    player.color = BLUE;
 
     // Initialize enemies
     for (int i = 0; i < NUM_MAX_ENEMIES; i++)
     {
+        if(GetRandomValue(0,100)<99){
         enemy[i].rec.width = 10;
         enemy[i].rec.height = 10;
         enemy[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
@@ -158,6 +162,21 @@ void InitGame(void)
         enemy[i].speed.y = 5;
         enemy[i].active = true;
         enemy[i].color = GRAY;
+        enemy[i].pv=1;
+        enemy[i].type= 1;
+        }
+        else{
+           enemy[i].rec.width = 20;
+        enemy[i].rec.height = 20;
+        enemy[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
+        enemy[i].rec.y = GetRandomValue(0, screenHeight - enemy[i].rec.height);
+        enemy[i].speed.x = 5;
+        enemy[i].speed.y = 5;
+        enemy[i].active = true;
+        enemy[i].color = YELLOW;
+        enemy[i].pv=3; 
+        enemy[i].type= 2;
+        }
     }
 
     // Initialize shoots
@@ -165,12 +184,18 @@ void InitGame(void)
     {
         shoot[i].rec.x = player.rec.x;
         shoot[i].rec.y = player.rec.y + player.rec.height/4;
-        shoot[i].rec.width = 10;
+        shoot[i].rec.width = 5;
         shoot[i].rec.height = 5;
-        shoot[i].speed.x = 7;
-        shoot[i].speed.y = 0;
         shoot[i].active = false;
+        shoot[i].speed.x = 7;
         shoot[i].color = MAROON;
+    }
+    for (int i = 0; i < NUM_SHOOTS; i=i+2)
+    {
+        shoot[i].speed.y = 0;
+        shoot[i+1].speed.y = 2;
+    
+
     }
 }
 
@@ -292,9 +317,9 @@ void UpdateGame(void)
             {
                 shootRate += 5;
 
-                for (int i = 0; i < NUM_SHOOTS; i++)
+                for (int i = 0; i < NUM_SHOOTS;i++)
                 {
-                    if (!shoot[i].active && shootRate%20 == 0)
+                    if (!shoot[i].active && shootRate%40 == 0)
                     {
                         shoot[i].rec.x = player.rec.x;
                         shoot[i].rec.y = player.rec.y + player.rec.height/4;
@@ -311,6 +336,8 @@ void UpdateGame(void)
                 {
                     // Movement
                     shoot[i].rec.x += shoot[i].speed.x;
+                    shoot[i].rec.y += shoot[i].speed.y;
+                    
 
                     // Collision with enemy
                     for (int j = 0; j < activeEnemies; j++)
@@ -320,11 +347,20 @@ void UpdateGame(void)
                             if (CheckCollisionRecs(shoot[i].rec, enemy[j].rec))
                             {
                                 shoot[i].active = false;
+                                enemy[j].pv-=1;
+                                if(enemy[j].pv==0){
                                 enemy[j].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
                                 enemy[j].rec.y = GetRandomValue(0, screenHeight - enemy[j].rec.height);
+                                if(enemy[j].type== 1){
+                                    enemy[j].pv=1;
+                                }
+                                if(enemy[j].type== 2){
+                                    enemy[j].pv=3;
+                                }
                                 shootRate = 0;
                                 enemiesKill++;
                                 score += 100;
+                                }
                             }
 
                             if (shoot[i].rec.x + shoot[i].rec.width >= screenWidth)

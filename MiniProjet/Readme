@@ -1,3 +1,21 @@
-#Description du Projet
-- Modification du jeu space invaders.
--ajout de nouveau ennemis et de nouvelles armes.
+Description du projet
+Modification de space invaders .
+ajout de deux nouveaux types d'ennemis, un qui donne un bonus sur nos tirs et un qui explose pour tuer les ennemis aux alentours.
+Comment compiler
+gcc -o spaceinvaders space_invaders.c -Wall -std=c99 -D_DEFAULT_SOURCE -Wno-missing-braces -Wunused-result -s -O1 -D_DEFAULT_SOURCE -I. -I/home/bot/Raylib.git/src -I/home/bot/Raylib.git/src/external -I/usr/local/include -L. -L/home/bot/Raylib.git/src -L/home/bot/Raylib.git/src -L/usr/local/lib -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -latomic -DPLATFORM_DESKTOP
+
+Comment exécuter
+./spaceinvaders
+
+Comment utiliser le projet
+
+les règles et les touches sont les mêmes que dans le jeu de base il y a simplement 2 nouveaux types d'ennemis qui sont plus dur à tuer car ont plus de point de vie mais qui en échange donnent des bonus.
+
+URL vidéo de démo
+https://www.youtube.com/watch?v=IUvp1LVh8dA.
+
+Quelques détails sur votre implémentation
+Ajout d'une structure explosion , d'une génération aléatoire d'ennemies avec une probabilité d'apparition et enfin la gestion des collisition entre les explosions générées par un des ennemie et les autres ennemis.
+
+Extensions / améliorations possibles
+Modification des différents ennemies au cours de la partie car pour le moment les ennemies ont leur type défini au début de la partie et celui-ci ne change pas lorsqu'il sont tué où sortent de l'écran.

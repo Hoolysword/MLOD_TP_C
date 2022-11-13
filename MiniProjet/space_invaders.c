@@ -12,7 +12,8 @@
 ********************************************************************************************/
 
 #include "raylib.h"
-
+#include <math.h>
+#include <stdio.h>
 #if defined(PLATFORM_WEB)
     #include <emscripten/emscripten.h>
 #endif
@@ -20,7 +21,7 @@
 //----------------------------------------------------------------------------------
 // Some Defines
 //----------------------------------------------------------------------------------
-#define NUM_SHOOTS 50
+#define NUM_SHOOTS 60
 #define NUM_MAX_ENEMIES 500
 #define FIRST_WAVE 10
 #define SECOND_WAVE 20
@@ -36,6 +37,7 @@ typedef struct Player{
     Vector2 speed;
     Color color;
     int bonus;
+    int shootrate;
 } Player;
 
 typedef struct Enemy{
@@ -53,7 +55,10 @@ typedef struct Shoot{
     bool active;
     Color color;
 } Shoot;
-
+typedef struct Explosion{
+    int radius;
+    Vector2 position;
+}Explosion;
 //------------------------------------------------------------------------------------
 // Global Variables Declaration
 //------------------------------------------------------------------------------------
@@ -68,6 +73,7 @@ static bool victory = false;
 static Player player = { 0 };
 static Enemy enemy[NUM_MAX_ENEMIES] = { 0 };
 static Shoot shoot[NUM_SHOOTS] = { 0 };
+static Explosion explosion;
 static EnemyWave wave = { 0 };
 
 static int shootRate = 0;
@@ -125,7 +131,16 @@ int main(void)
 //------------------------------------------------------------------------------------
 // Module Functions Definitions (local)
 //------------------------------------------------------------------------------------
-
+bool CheckCollisionExplosion(int x,int y,int rad,int x1,int y1){
+    int distance = sqrt(((x1-x)^2)+((y1-y)^2));
+    printf("%d",distance);
+        if(distance<rad){
+            return true;
+        }
+        else{
+            return false;
+        }
+}
 // Initialize game variables
 void InitGame(void)
 {
@@ -149,11 +164,19 @@ void InitGame(void)
     player.speed.x = 5;
     player.speed.y = 5;
     player.color = BLUE;
+    player.bonus =0;
+    player.shootrate=5;
 
     // Initialize enemies
+         int compteurRED=0;
+        int compteurYELLOW=0;
+       compteurRED=0;
+       compteurYELLOW=0;
+       while(compteurYELLOW==0 || compteurRED==0){
     for (int i = 0; i < NUM_MAX_ENEMIES; i++)
     {
-        if(GetRandomValue(0,100)<99){
+        
+        if(GetRandomValue(0,100)<95){
         enemy[i].rec.width = 10;
         enemy[i].rec.height = 10;
         enemy[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
@@ -165,7 +188,7 @@ void InitGame(void)
         enemy[i].pv=1;
         enemy[i].type= 1;
         }
-        else{
+        else if(GetRandomValue(0,10)<=5){
            enemy[i].rec.width = 20;
         enemy[i].rec.height = 20;
         enemy[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
@@ -176,9 +199,23 @@ void InitGame(void)
         enemy[i].color = YELLOW;
         enemy[i].pv=3; 
         enemy[i].type= 2;
+        compteurYELLOW=1;
+        }
+        else{
+           enemy[i].rec.width = 25;
+        enemy[i].rec.height = 25;
+        enemy[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
+        enemy[i].rec.y = GetRandomValue(0, screenHeight - enemy[i].rec.height);
+        enemy[i].speed.x = 5;
+        enemy[i].speed.y = 5;
+        enemy[i].active = true;
+        enemy[i].color = RED;
+        enemy[i].pv=2; 
+        enemy[i].type= 3;
+        compteurRED=1; 
         }
     }
-
+       }
     // Initialize shoots
     for (int i = 0; i < NUM_SHOOTS; i++)
     {
@@ -190,13 +227,15 @@ void InitGame(void)
         shoot[i].speed.x = 7;
         shoot[i].color = MAROON;
     }
-    for (int i = 0; i < NUM_SHOOTS; i=i+2)
+    for (int i = 0; i < NUM_SHOOTS; i=i+3)
     {
         shoot[i].speed.y = 0;
         shoot[i+1].speed.y = 2;
-    
-
+        shoot[i+2].speed.y = -2;
     }
+    explosion.radius=0;
+    explosion.position.x=100;
+    explosion.position.y=100;
 }
 
 // Update game (one frame)
@@ -315,7 +354,7 @@ void UpdateGame(void)
             // Shoot initialization
             if (IsKeyDown(KEY_SPACE))
             {
-                shootRate += 5;
+                shootRate += player.shootrate;
 
                 for (int i = 0; i < NUM_SHOOTS;i++)
                 {
@@ -336,7 +375,9 @@ void UpdateGame(void)
                 {
                     // Movement
                     shoot[i].rec.x += shoot[i].speed.x;
+                    if(player.bonus==1){
                     shoot[i].rec.y += shoot[i].speed.y;
+                    }
                     
 
                     // Collision with enemy
@@ -349,20 +390,57 @@ void UpdateGame(void)
                                 shoot[i].active = false;
                                 enemy[j].pv-=1;
                                 if(enemy[j].pv==0){
+                                    if(enemy[j].type== 1){
+                                        enemy[j].pv=1;
+                                    }
+                                    if(enemy[j].type== 2){
+                                        enemy[j].pv=3;
+                                        player.bonus=1;
+                                        player.shootrate=10;
+                                    }
+                                    if(enemy[j].type == 3){
+                                         enemy[j].pv=2;
+                                         explosion.position.x=enemy[j].rec.x;
+                                        explosion.position.y=enemy[j].rec.y;
+                                        explosion.radius=1;
+                                         printf("test");
+                                        
+                                    }
                                 enemy[j].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
                                 enemy[j].rec.y = GetRandomValue(0, screenHeight - enemy[j].rec.height);
-                                if(enemy[j].type== 1){
-                                    enemy[j].pv=1;
-                                }
-                                if(enemy[j].type== 2){
-                                    enemy[j].pv=3;
-                                }
                                 shootRate = 0;
                                 enemiesKill++;
                                 score += 100;
                                 }
                             }
-
+                            if(CheckCollisionCircleRec(explosion.position,explosion.radius,enemy[j].rec)){
+                               
+                            
+                    
+                                enemy[j].pv=0;
+                                if(enemy[j].type== 1){
+                                        enemy[j].pv=1;
+                                    }
+                                    if(enemy[j].type== 2){
+                                        enemy[j].pv=3;
+                                        player.bonus=1;
+                                        player.shootrate=10;
+                                    }
+                                    if(enemy[j].type == 3){
+                                         enemy[j].pv=2;
+                                        explosion.radius=1;
+                                        explosion.position.x=enemy[j].rec.x;
+                                        explosion.position.y=enemy[j].rec.y;
+                                        explosion.radius=1;
+                                         printf("test");
+                                    }
+                                enemy[j].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
+                                enemy[j].rec.y = GetRandomValue(0, screenHeight - enemy[j].rec.height);
+                                shootRate = 0;
+                                enemiesKill++;
+                                score += 100;
+                                
+                            }
                             if (shoot[i].rec.x + shoot[i].rec.width >= screenWidth)
                             {
                                 shoot[i].active = false;
@@ -387,8 +465,15 @@ void UpdateGame(void)
 // Draw game (one frame)
 void DrawGame(void)
 {
+   
     BeginDrawing();
-
+            if(explosion.radius!=0){
+            DrawCircleLines(explosion.position.x, explosion.position.y,explosion.radius,RED);
+            explosion.radius+=2;
+            if(explosion.radius>100){
+                explosion.radius=0;
+            }
+            }
         ClearBackground(RAYWHITE);
 
         if (!gameOver)
